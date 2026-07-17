@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "helper_scripts",
+    "day1",
+]
