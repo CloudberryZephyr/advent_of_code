@@ -1,5 +1,3 @@
-use std::i32::MIN;
-
 use helper_scripts::get_puzzle_input;
 
 struct Instruction {
