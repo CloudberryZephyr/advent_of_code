@@ -6,10 +6,15 @@ struct Range {
 }
 
 fn main() {
+    // part_1();
+    part_2();
 
+}
+
+fn part_1() {
     let mut data_list : Vec<Range> = Vec::new();
-    let succ = load_input(&mut data_list);
-    // let succ = load_dummy_input(&mut data_list);
+    // let succ = load_input(&mut data_list);
+    let succ = load_dummy_input(&mut data_list);
 
     let mut sum : i64 = 0;
 
@@ -34,8 +39,72 @@ fn main() {
         }
     }
 
-    println!("sum of invalid ids = {}", sum);
+    println!("sum of invalid ids pt 1 = {}", sum);
 }
+
+
+fn part_2() {
+    let mut data_list : Vec<Range> = Vec::new();
+    let succ = load_input(&mut data_list);
+    // let succ = load_dummy_input(&mut data_list);
+
+    let mut sum : i64 = 0;
+
+    if !succ {
+        println!("Exiting...");
+        return;
+    }
+
+    for range in data_list {
+        let lower : i64 = range.first.parse().unwrap();
+        let upper : i64 = range.last.parse().unwrap();
+        for i in lower..=upper {
+            if check_num(i) {
+                println!("Adding {}", i);
+                sum += i;
+            }
+        }
+    }
+
+    println!("sum of invalid ids pt 2 = {}", sum);
+}
+
+
+fn check_num(num: i64) -> bool {
+    for j in 1..=(num.to_string().len()/2) { // check all possible interval lengths
+        // check if there's a pattern in this interval
+        if num.to_string().len() % j == 0 && check_size(num, j) {// if so, add to sum, break because we don't need to check any more intervals
+            return true; // we found an interval with a repetition
+        }
+    }
+    false // we never found a repeating interval for this number
+}
+
+fn check_size(num: i64, len: usize) -> bool {
+    // println!("Checking {} with length {}", num, len);
+    // get slice for matching
+    let match_slice: String = num.to_string()[..len].to_string();
+    // split i into  len/j slices
+    let slices = split_num(num, len);
+    for slice in slices {
+        // println!("{} vs {}", match_slice, slice);
+        if slice != match_slice {return false;} // no pattern at this level, check the next level
+    }
+    true
+}
+
+fn split_num(num : i64, slice_len : usize) -> Vec<String> {
+    let mut slices : Vec<String> = Vec::new();
+    let mut num : String = num.to_string();
+    while num.len() >= slice_len {
+        let slice: String = num[..slice_len].to_string();
+        slices.push(slice);
+        num = num[slice_len..].to_string();
+    }
+
+    slices
+}
+
 
 // get input
 fn load_input(data_list : &mut Vec<Range>) -> bool {
