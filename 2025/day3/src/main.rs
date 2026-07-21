@@ -1,7 +1,8 @@
 use helper_scripts::get_puzzle_input;
 
 fn main() {
-    part_1();
+    // part_1();
+    part_2();
 }
 
 fn part_1() {
@@ -33,6 +34,42 @@ fn part_1() {
         println!("Adding {}", batteries);
 
         sum += i32::try_from(batteries).unwrap();
+    }
+
+    println!("Part 1 sum is {}", sum);
+}
+
+fn part_2() {
+    let mut data_list : Vec<String> = Vec::new();
+    let succ = load_input(&mut data_list);
+    // let succ = load_dummy_input(&mut data_list);
+
+    let mut sum : i64 = 0;
+
+    if !succ {
+        println!("Exiting...");
+        return;
+    }
+
+    for num in data_list {
+        let digits: Vec<u32> = num
+            .to_string()
+            .chars()
+            .map(|c| c.to_digit(10).unwrap())
+            .collect();
+
+        let mut offset = 0;
+        let mut batteries: i64 = 0;
+
+        for digit in (0..12).rev() {
+            let (val, new_offset) = get_max(digits[offset..digits.len()-digit].to_vec(), offset);
+            offset = new_offset+1;
+
+            batteries += 10i64.pow(digit.try_into().unwrap())*i64::try_from(val).unwrap();
+        }
+        println!("Adding {}", batteries);
+
+        sum += batteries;
     }
 
     println!("Part 1 sum is {}", sum);
